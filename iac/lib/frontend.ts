@@ -1,6 +1,5 @@
 import { Construct } from "constructs";
-import { aws_s3, aws_s3_deployment } from 'aws-cdk-lib';
-import * as cdk from 'aws-cdk-lib';
+import { aws_s3, aws_s3_deployment, RemovalPolicy } from 'aws-cdk-lib';
 import { BlockPublicAccess } from "aws-cdk-lib/aws-s3";
 import { CfnDistribution, CloudFrontWebDistribution, OriginAccessIdentity } from "aws-cdk-lib/aws-cloudfront";
 
@@ -9,7 +8,7 @@ export default function (scope: Construct) {
   const deploymentBucket = new aws_s3.Bucket(scope, 'deployment-bucket', {
     publicReadAccess: true,
     websiteIndexDocument: "index.html",
-    removalPolicy: cdk.RemovalPolicy.DESTROY,
+    removalPolicy: RemovalPolicy.DESTROY,
     blockPublicAccess: new BlockPublicAccess({
       blockPublicAcls: false,
       blockPublicPolicy: false
