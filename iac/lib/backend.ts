@@ -49,7 +49,7 @@ export default function (scope: Construct, accountId: string) {
   });
 
   const weatherTable = createTable({
-    tableName: 'weather_table',
+    tableName: 'weather',
     location: 'Weather/',
     columns: [
       {
@@ -70,27 +70,15 @@ export default function (scope: Construct, accountId: string) {
   //Define API & lambda to retreive data
   const api = new aws_apigateway.RestApi(scope, 'hark-api');
 
-  const readDatabasePolicy = new aws_iam.PolicyStatement({
-    actions: [
-      'athena:*',
-      's3:GetBucketLocation',
-      's3:GetObject',
-      's3:PutObject'
-    ],
-    resources: [
-      `arn:aws:athena:*:${accountId}:workgroup`,
-      `arn:aws:s3:::athena-results-278421086553/*`,
-      dataBucket.bucketArn,
-      dataBucket.arnForObjects('/*')
-    ]
-  });
-
   const getConsolidatedDataLambda = new aws_lambda.Function(scope, 'get-consolidated-data-lambda', {
     code: aws_lambda.Code.fromAsset(`../lambda/getConsolidatedData`),
     handler: 'index.handler',
-    runtime: aws_lambda.Runtime.NODEJS_18_X,
+    runtime: aws_lambda.Runtime.NODEJS_16_X,
     timeout: Duration.seconds(10)
   });
+  getConsolidatedDataLambda.role?.addManagedPolicy(aws_iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonAthenaFullAccess'));
+  getConsolidatedDataLambda.role?.addManagedPolicy(aws_iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3FullAccess'));
+
   const consolidatedDataIntegration = new LambdaIntegration(getConsolidatedDataLambda);
   const consolidatedDataResource = api.root.addResource("consolidateddata");
   consolidatedDataResource.addCorsPreflight({ allowOrigins: ['*'] })
