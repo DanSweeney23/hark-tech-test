@@ -7,12 +7,12 @@ export type ConsolidatedDataResponse = {
     timestamp: string,
     consumption: number,
     isAnomaly: number
-  },
+  }[],
   weather: {
     timestamp: string,
     averagetemperature: number,
     averagehumidity: number
-  }
+  }[]
 };
 
 export function useConsolidatedDataRequest() {
