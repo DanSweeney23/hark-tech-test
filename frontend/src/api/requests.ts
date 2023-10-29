@@ -5,11 +5,13 @@ const baseUrl = import.meta.env.VITE_API_URL;
 export type ConsolidatedDataResponse = {
   energy: {
     timestamp: string,
+    time: number,
     consumption: number,
     isAnomaly: number
   }[],
   weather: {
     timestamp: string,
+    time: number,
     averagetemperature: number,
     averagehumidity: number
   }[]

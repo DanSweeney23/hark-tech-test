@@ -2,8 +2,10 @@ import { ConsolidatedDataResponse, useConsolidatedDataRequest } from "../api/req
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
-function parseTimestamp(timestamp: string) {
-  return new Date(timestamp.substring(0, 23)).getTime();
+function isAnomaly(time: number, data: ConsolidatedDataResponse) {
+  const dataPoint = data.energy.filter(item => item.time === time)[0];
+  if(dataPoint == undefined) return false;
+  return dataPoint.isAnomaly;
 }
 
 function getValueSuffix(columnName: string) {
@@ -27,15 +29,23 @@ export default function () {
     },
     tooltip: {
       formatter: function (this: Highcharts.TooltipFormatterContextObject) {
+        const currentDatetime = parseInt(this.points![0].x!.toString())
+        const anomaly = isAnomaly(currentDatetime, data);
+
         const lines = this.points!.map(p => `
           </br>
-            <span style="font-weight: bold;color: ${p.series.color}">${p.series.name}:</span> 
-            ${p.y} ${getValueSuffix(p.series.name)}
+          <span style="font-weight: bold;color: ${p.series.color}">${p.series.name}:</span> 
+          ${p.y} ${getValueSuffix(p.series.name)}
           </span>`
         )
-        const text = lines.reduce((total, current) => total += current, '');
+
+        const dateText = `<span>${new Date(this.x!).toLocaleString()}</span>`;
+        const valuesText = lines.reduce((total, current) => total += current, '');
+        const anomalyText = anomaly ? `</br></br> <span style="color:red;font-weight:bold">Anomaly</span>` : '';
+        const text = dateText + valuesText + anomalyText;
+
         console.log(text)
-        return `<span>${new Date(this.x!).toLocaleString()}</span>${text}`;
+        return text;
       },
       shared: true
     },
@@ -43,9 +53,9 @@ export default function () {
       type: 'datetime' // Other types are "logarithmic", "datetime" and "category"
     },
     series: [
-      { name: 'energy consumption', data: data.energy.map(item => [parseTimestamp(item.timestamp), item.consumption]) },
-      { name: 'temperature', data: data.weather.map(item => [parseTimestamp(item.timestamp), item.averagetemperature]) },
-      { name: 'humidity', data: data.weather.map(item => [parseTimestamp(item.timestamp), item.averagehumidity]) }
+      { name: 'energy consumption', data: data.energy.map(item => [item.time, item.consumption]) },
+      { name: 'temperature', data: data.weather.map(item => [item.time, item.averagetemperature]) },
+      { name: 'humidity', data: data.weather.map(item => [item.time, item.averagehumidity]) }
     ]
   });
 

@@ -1,7 +1,11 @@
 const AWS = require("aws-sdk");
 const AthenaExpress = require("athena-express");
-const athenaExpressConfig = { aws: AWS }; 
+const athenaExpressConfig = { aws: AWS };
 const athenaExpress = new AthenaExpress(athenaExpressConfig);
+
+function parseTimestamp(timestamp) {
+  return new Date(timestamp.substring(0, 23)).getTime();
+}
 
 exports.handler = async function (event) {
   const energyQuery = `
@@ -28,15 +32,15 @@ exports.handler = async function (event) {
   ];
 
   const results = await Promise.all(promises);
-  
+
   const response = {
     statusCode: 200,
     headers: {
       "Access-Control-Allow-Origin": "*"
     },
     body: JSON.stringify({
-      energy: results[0].Items,
-      weather: results[1].Items
+      energy: results[0].Items.map(item => ({ ...item, time: parseTimestamp(item.timestamp) })),
+      weather: results[1].Items.map(item => ({ ...item, time: parseTimestamp(item.timestamp) }))
     })
   };
 
