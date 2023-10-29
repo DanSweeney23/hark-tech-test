@@ -12,7 +12,7 @@ function isAnomaly(time: number, data: ConsolidatedDataResponse) {
 function getValueSuffix(columnName: string) {
   switch (columnName) {
     case 'energy consumption':
-      return 'kWh';
+      return 'kW';
     case 'temperature':
       return '°C';
     case 'humidity':

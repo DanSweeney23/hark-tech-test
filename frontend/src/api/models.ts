@@ -16,6 +16,7 @@ export type ConsolidatedDataResponse = {
   energy: EnergyDatapoint[],
   weather: WeatherDatapoint[],
   averageconsumption: number,
+  totalconsumption: number,
   averagetemperature: number,
   averagehumidity: number
 };
