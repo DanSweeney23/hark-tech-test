@@ -8,9 +8,9 @@ export default function () {
       {
         data !== null ?
           <div>
-            <p>Average consumption: {data?.averageconsumption} kWh</p>
-            <p>Average temperature: {data?.averagetemperature} °C</p>
-            <p>Average humidity: {data?.averagehumidity} g/m3</p>
+            <p>Average consumption: {data?.averageconsumption.toFixed(1)} kWh</p>
+            <p>Average temperature: {data?.averagetemperature.toFixed(1)} °C</p>
+            <p>Average humidity: {data?.averagehumidity.toFixed(1)} g/m3</p>
           </div>
           : ''
       }
