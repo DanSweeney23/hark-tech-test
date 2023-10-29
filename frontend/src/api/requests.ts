@@ -1,21 +1,7 @@
 import { useEffect, useState } from "react";
+import { ConsolidatedDataResponse } from "./models";
 
 const baseUrl = import.meta.env.VITE_API_URL;
-
-export type ConsolidatedDataResponse = {
-  energy: {
-    timestamp: string,
-    time: number,
-    consumption: number,
-    isAnomaly: number
-  }[],
-  weather: {
-    timestamp: string,
-    time: number,
-    averagetemperature: number,
-    averagehumidity: number
-  }[]
-};
 
 export function useConsolidatedDataRequest() {
   const url = `${baseUrl}/consolidateddata`;

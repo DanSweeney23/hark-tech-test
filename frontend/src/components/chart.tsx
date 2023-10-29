@@ -4,7 +4,7 @@ import HighchartsReact from 'highcharts-react-official';
 
 function isAnomaly(time: number, data: ConsolidatedDataResponse) {
   const dataPoint = data.energy.filter(item => item.time === time)[0];
-  if(dataPoint == undefined) return false;
+  if (dataPoint == undefined) return false;
   return dataPoint.isAnomaly;
 }
 
@@ -33,15 +33,15 @@ export default function () {
         const anomaly = isAnomaly(currentDatetime, data);
 
         const lines = this.points!.map(p => `
-          </br>
+          <br>
           <span style="font-weight: bold;color: ${p.series.color}">${p.series.name}:</span> 
           ${p.y} ${getValueSuffix(p.series.name)}
           </span>`
         )
 
-        const dateText = `<span>${new Date(this.x!).toLocaleString()}</span>`;
+        const dateText = `<span>${new Date(this.x!).toLocaleString()}</span><br>`;
         const valuesText = lines.reduce((total, current) => total += current, '');
-        const anomalyText = anomaly ? `</br></br> <span style="color:red;font-weight:bold">Anomaly</span>` : '';
+        const anomalyText = anomaly ? `<br><br> <span style="color:red;font-weight:bold">Anomaly</span>` : '';
         const text = dateText + valuesText + anomalyText;
 
         console.log(text)
@@ -61,9 +61,7 @@ export default function () {
 
   return (
     <>
-      <div>
-        {error ? <p>An error has occured. Please try again.</p> : ''}
-        {loading ? <p>Loading, please wait...</p> : ''}
+      <div style={{ width: '800px' }}>
         {data ? <HighchartsReact
           highcharts={Highcharts}
           options={getChartOptions(data)}

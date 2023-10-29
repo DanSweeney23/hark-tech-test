@@ -26,12 +26,29 @@ exports.handler = async function (event) {
     FROM "hark_database"."weather";
   `;
 
+  const averageConsumptionQuery = `
+    SELECT
+      SUM(consumption)/COUNT(*) as averageconsumption
+    FROM "hark_database"."half_hourly_energy_data"
+  `;
+
+  const averageTemperatureQuery = `
+    SELECT 
+      SUM(averagetemperature)/COUNT(*) as averagetemperature,
+      SUM(averagehumidity)/COUNT(*) as averagehumidity
+    FROM "hark_database"."weather"
+  `
+
   const promises = [
     athenaExpress.query(energyQuery),
-    athenaExpress.query(weatherQuery)
+    athenaExpress.query(weatherQuery),
+    athenaExpress.query(averageConsumptionQuery),
+    athenaExpress.query(averageTemperatureQuery)
   ];
 
   const results = await Promise.all(promises);
+
+  console.log(JSON.stringify(results))
 
   const response = {
     statusCode: 200,
@@ -40,7 +57,10 @@ exports.handler = async function (event) {
     },
     body: JSON.stringify({
       energy: results[0].Items.map(item => ({ ...item, time: parseTimestamp(item.timestamp) })),
-      weather: results[1].Items.map(item => ({ ...item, time: parseTimestamp(item.timestamp) }))
+      weather: results[1].Items.map(item => ({ ...item, time: parseTimestamp(item.timestamp) })),
+      averageconsumption: results[2].Items[0].averageconsumption,
+      averagetemperature: results[3].Items[0].averagetemperature,
+      averagehumidity: results[3].Items[0].averagehumidity
     })
   };
 
