@@ -1,4 +1,3 @@
-import { useConsolidatedDataRequest } from "../api/requests";
 import { ConsolidatedDataResponse } from "../api/models"
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
@@ -21,9 +20,7 @@ function getValueSuffix(columnName: string) {
   return '';
 }
 
-export default function () {
-  const { data } = useConsolidatedDataRequest();
-
+export default function (props: { data: ConsolidatedDataResponse }) {
   const getChartOptions = (data: ConsolidatedDataResponse) => ({
     title: {
       text: 'Energy Consumption & Weather Data'
@@ -63,9 +60,9 @@ export default function () {
   return (
     <>
       <div style={{ width: '800px' }}>
-        {data ? <HighchartsReact
+        {props.data ? <HighchartsReact
           highcharts={Highcharts}
-          options={getChartOptions(data)}
+          options={getChartOptions(props.data)}
         /> : ''}
       </div>
     </>

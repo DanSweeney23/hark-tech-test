@@ -1,17 +1,16 @@
-import { useConsolidatedDataRequest } from "../api/requests";
+import { ConsolidatedDataResponse } from "../api/models";
 
-export default function () {
-  const { data } = useConsolidatedDataRequest();
+export default function (props: { data: ConsolidatedDataResponse }) {
 
   return (
     <>
       {
-        data !== null ?
+        props.data !== null ?
           <div>
-          <p>Average consumption: {data?.averageconsumption.toFixed(1)} kW</p>
-            <p>Total consumption: {data?.totalconsumption.toFixed(1)} kWh</p>
-            <p>Average temperature: {data?.averagetemperature.toFixed(1)} °C</p>
-            <p>Average humidity: {data?.averagehumidity.toFixed(1)} g/m3</p>
+          <p>Average consumption: {props.data.averageconsumption.toFixed(1)} kW</p>
+            <p>Total consumption: {props.data.totalconsumption.toFixed(1)} kWh</p>
+            <p>Average temperature: {props.data.averagetemperature.toFixed(1)} °C</p>
+            <p>Average humidity: {props.data.averagehumidity.toFixed(1)} g/m3</p>
           </div>
           : ''
       }
