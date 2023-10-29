@@ -17,6 +17,7 @@ export function useConsolidatedDataRequest() {
 
     try {
       const res = await fetch(url);
+      setLoading(false);
 
       if (!res.ok) setError(true);
       else {
@@ -27,8 +28,6 @@ export function useConsolidatedDataRequest() {
       console.error(err);
       setError(true);
     }
-
-    setLoading(false);
   }
 
   useEffect(() => {
