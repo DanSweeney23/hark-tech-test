@@ -1,4 +1,5 @@
-import { ConsolidatedDataResponse, useConsolidatedDataRequest } from "../api/requests";
+import { useConsolidatedDataRequest } from "../api/requests";
+import { ConsolidatedDataResponse } from "../api/models"
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 
@@ -21,7 +22,7 @@ function getValueSuffix(columnName: string) {
 }
 
 export default function () {
-  const { data, loading, error } = useConsolidatedDataRequest();
+  const { data } = useConsolidatedDataRequest();
 
   const getChartOptions = (data: ConsolidatedDataResponse) => ({
     title: {
@@ -39,7 +40,7 @@ export default function () {
           </span>`
         )
 
-        const dateText = `<span>${new Date(this.x!).toLocaleString()}</span><br>`;
+        const dateText = `<span>${new Date(currentDatetime).toLocaleString()}</span><br>`;
         const valuesText = lines.reduce((total, current) => total += current, '');
         const anomalyText = anomaly ? `<br><br> <span style="color:red;font-weight:bold">Anomaly</span>` : '';
         const text = dateText + valuesText + anomalyText;
@@ -50,7 +51,7 @@ export default function () {
       shared: true
     },
     xAxis: {
-      type: 'datetime' // Other types are "logarithmic", "datetime" and "category"
+      type: 'datetime'
     },
     series: [
       { name: 'energy consumption', data: data.energy.map(item => [item.time, item.consumption]) },
